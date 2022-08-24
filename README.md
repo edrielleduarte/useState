@@ -1,70 +1,234 @@
-# Getting Started with Create React App
+# HONKS - USESTATES
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Estado
+O estado de uma aplicação representa as características dela naquele momento. Por exemplo: os dados do usuário foram carregados, o botão está ativo, o usuário está na página de contato e etc.
 
-## Available Scripts
+        const App = () => {
+        const ativo = true;
 
-In the project directory, you can run:
+        return (
+                <button disabled={!ativo}>{ativo ? 'Botão Ativo' : 'Botão Inativo'}</button>
+        );
+        };
 
-### `npm start`
+* Disabled desativa o botão ou ativa conforme se for true ou falso
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+ - Estado do botão ao clicar pra funcionar o hook
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+        const App = () => {
+        const [ativo, setAtivo] = useState(false)
 
-### `npm test`
+        function handleClick () {
+            setAtivo(!ativo)
+        }
+        return (
+            <button onClick={handleClick}> { ativo ? 'Ativo' : 'Inativo' } </button>
+        )
+        };
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+Podemos ter um objeto nos hoonks, como abaixo e passar seus valores, posso mudar e acrescentar novos valores, conforme abaixo:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+        const App = () => {
+            const [ativo, setAtivo] = useState(false)
+            const [dados, setDados] = useState({ nome: 'Edrielle', idade: '26' })
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+            function handleClick () {
+                setAtivo(!ativo)
+                setDados({...dados, faculdade: 'Analise Desenvolvimento', nome: 'Rose'})  // aqui vem a desustruração conforme o props.
+            }
+            return (
+                <div>
+                    <p> { dados.nome }</p>
+                    <p> { dados.idade } </p>
+                    <p>{  dados.faculdade } </p>
+                    <button onClick={handleClick}> { ativo ? 'Ativo' : 'Inativo' } </button>
+                </div>
+            )
+        };
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+<b>Props</b>
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Podemos passar o estado e a função de modificação como propriedades para outros elementos.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+        App.js
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+        import React from 'react';
+        import Modal from './Modal';
+        import ButtonModal from './ButtonModal';
 
-## Learn More
+        const App = () => {
+        const [modal, setModal] = React.useState(false);
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+        return (
+            <div>
+            <Modal modal={modal} setModal={setModal} />
+            <ButtonModal setModal={setModal} />
+            </div>
+        );
+        };
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+        export default App;
 
-### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-### Analyzing the Bundle Size
+        ButtonModal.js
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+        import React from 'react'
 
-### Making a Progressive Web App
+            const ButtonModal = ({ setModal }) => {
+            return (
+                <button onClick={() => setModal(true) }>Abrir</button>
+            )
+            }
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+        export default ButtonModal
 
-### Advanced Configuration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+        Modal.js
 
-### Deployment
+        import React from 'react'
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+        const Modal = ({ modal, setModal }) => {
 
-### `npm run build` fails to minify
+            if(modal === true)
+            return (
+                <div> Esse é um modal. <button onClick={() => setModal(false)}>Fechar</button></div>
+            )
+            return null
+        }
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+        export default Modal
+
+
+<b>Reatividade</b>
+
+Não modifique o estado diretamente. Utilize sempre a função de atualização do estado, pois ela que garante a reatividade dos componentes.
+
+
+            const App = () => {
+            const [modal, setModal] = useState(false);
+            const [items, setItems] = useState('Teste')
+
+            function handleClick() {
+                setItems('Outro')
+            }
+
+                return (
+                <div>
+                    <p>{ items} </p>
+                    <button onClick={handleClick}> Clicar </button>
+                )
+
+
+<b>Callback</b>
+Podemos passar uma função de callback para atualizar o estado. A função de callback recebe um parâmetro que representa o valor anterior e irá modificar o estado para o valor que for retonado na função.
+
+
+        const ButtonModal = ({ setModal }) => {
+
+            function handleClick(){
+                setModal((ativo) => !ativo)
+            }
+
+            return (
+                <button onClick={ handleClick}>Abrir</button>
+            )
+        }
+
+
+* Tipos callback:
+
+            const [modal, setModal] = useState(() => {
+                const ativo = window.localStorage.getItem('ativo');
+                return ativo;
+            });
+
+
+
+<b>React.StrictMode</b>
+
+
+O modo estrito invoca duas vezes a renderização do componente, quando o estado é atualizado. Assim é possível identificarmos funções com efeitos coláterais (side effects) e eliminarmos as mesmas.
+
+Funções com efeitos coláterais são aquelas que modificam estados que estão fora das mesmas.
+
+
+* EXEMPLO:
+
+
+            const App = () => {
+
+            const [contar, setContar] = useState(1)
+            const [items, setItems] = useState(['Item 1'])
+
+            function handleClick (){
+                setContar((contar) => 
+                { setItems((items) => [...items, 'Item' + (contar + 1)])
+                return contar + 1 
+                })
+            }
+            return (
+                <div>
+                    { items.map(item => <li key={item}> {item} </li>)}
+                    <button onClick={handleClick}>{ contar }</button>
+
+                </div>
+            )
+            };
+
+            export default App;
+
+O resultado pode ser duplicado os nomes items na tela devido o  react strict mode, se tirar, a função so renderiza uam vez.
+
+Para não ocorrer jogamos essa função para o lado de fora:
+
+    
+* EXEMPLO 2:
+
+
+            const App = () => {
+
+            const [contar, setContar] = useState(1)
+            const [items, setItems] = useState(['Item 1'])
+
+            function handleClick (){
+                setContar((contar) => 
+                { 
+                    return contar + 1 
+                })
+
+                setItems((items) => [...items, 'Item' + (contar + 1)])  // essa parte
+            }
+            return (
+                <div>
+                    { items.map(item => <li key={item}> {item} </li>)}
+                    <button onClick={handleClick}>{ contar }</button>
+
+                </div>
+            )
+            };
+
+            export default App;
+
+
+Não precisamos do return contar + 1, diretamente sem ele vai:
+
+            function handleClick (){
+                setContar((contar) => 
+                    contar + 1 
+                );
+                setItems((items) => [...items, 'Item ' + (contar + 1)])
+            }
+
+        
+        * OUTRA SOLUÇÃO PASSAR DIRETAMENTE SEM FUNCTION 
+
+            setContar(contar + 1)
+
+
+Items também:
+
+        setItems([...items, 'Item ' + (contar + 1))
